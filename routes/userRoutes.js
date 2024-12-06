@@ -4,16 +4,21 @@ import {
   deleteOneUser,
   getAllUsers,
   getSingleUser,
+  loginUser,
   updateUserById,
 } from "../controllers/userController.js";
+import { validateUser } from "../middlewares/validateUser.js";
+import { loginLimiter } from "../middlewares/loginLimiter.js";
 
 const router = express.Router();
 
 router.get("/:id", getSingleUser);
 
+router.post("/login", loginLimiter, loginUser);
+
 router.post("/create", createUser);
 
-router.get("/", getAllUsers);
+router.get("/", validateUser, getAllUsers);
 
 router.patch("/update/:id", updateUserById);
 
