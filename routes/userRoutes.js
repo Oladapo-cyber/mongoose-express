@@ -9,6 +9,7 @@ import {
 } from "../controllers/userController.js";
 import { validateUser } from "../middlewares/validateUser.js";
 import { loginLimiter } from "../middlewares/loginLimiter.js";
+import { validateJWT } from "../middlewares/validateJWT.js";
 
 const router = express.Router();
 
@@ -18,9 +19,11 @@ router.post("/login", loginLimiter, loginUser);
 
 router.post("/create", createUser);
 
-router.get("/", validateUser, getAllUsers);
+// router.get("/", validateUser, getAllUsers);
 
-router.patch("/update/:id", updateUserById);
+router.get("/", validateJWT, getAllUsers);
+
+router.patch("/update/:id", validateJWT, updateUserById);
 
 router.delete("/delete/:id", deleteOneUser);
 
