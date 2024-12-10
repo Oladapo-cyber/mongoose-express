@@ -132,12 +132,103 @@ export const sendOTP = async (req, res) => {
       port: 465,
       secure: true,
       auth: {
-        user: "your_email@gmail.com",
-        pass: "your_app_password",
+        user: "ydapo50@gmail.com",
+        pass: process.env.GMAIL_APP_PASSWORD,
       },
     });
 
-    res.status(200).json({ message: "OTP sent successfully", OTP: otp });
+    // const mailOptions = {
+    //   from: ",
+    //   to: ,
+    //   subject: "Hello from Nodemailer",
+    //   text: "This is a test email sent using Nodemailer.",
+    //};
+    const mailOptions = {
+      from: "ydapo50@gmail.com",
+      to: user.email,
+      subject: "Your One-Time Password (OTP) Code",
+      html: `
+          <html>
+            <head>
+              <style>
+                body {
+                  font-family: Arial, sans-serif;
+                  background-color: #f4f4f4;
+                  margin: 0;
+                  padding: 0;
+                }
+                .container {
+                  width: 100%;
+                  padding: 40px;
+                  background-color: #ffffff;
+                  border-radius: 8px;
+                  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                  max-width: 600px;
+                  margin: 20px auto;
+                }
+                .header {
+                  text-align: center;
+                  color: #333333;
+                }
+                .otp {
+                  font-size: 30px;
+                  font-weight: bold;
+                  color: #3498db;
+                  margin: 20px 0;
+                  text-align: center;
+                }
+                .footer {
+                  text-align: center;
+                  color: #7f8c8d;
+                  font-size: 14px;
+                }
+                .button {
+                  display: inline-block;
+                  background-color: #3498db;
+                  color: #ffffff;
+                  padding: 12px 30px;
+                  font-size: 16px;
+                  text-decoration: none;
+                  border-radius: 4px;
+                  text-align: center;
+                  margin: 20px 0;
+                }
+                .button:hover {
+                  background-color: #2980b9;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="container">
+                <div class="header">
+                  <h2>Welcome to Our Platform!</h2>
+                </div>
+                <p>Hello,</p>
+                <p>We received a request to verify your identity. Please use the following One-Time Password (OTP) to proceed:</p>
+                <div class="otp">
+                  ${otp}
+                </div>
+                <p>This OTP is valid for the next 5 minutes. If you did not request this, please ignore this email.</p>
+                <a href="#" class="button">Verify Now</a>
+                <div class="footer">
+                  <p>Thank you for using our service.</p>
+                  <p>If you have any questions, feel free to contact us.</p>
+                </div>
+              </div>
+            </body>
+          </html>
+        `,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error("Error sending email: ", error);
+        res.status(500).json({ message: error.message });
+      } else {
+        console.log("Email sent: ", info.response);
+        res.status(200).json({ message: "OTP sent successfully", OTP: otp });
+      }
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
