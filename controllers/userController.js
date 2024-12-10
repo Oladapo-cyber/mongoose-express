@@ -1,6 +1,8 @@
+import { generateOTP } from "../lib/generateOTP.js";
 import generateToken from "../lib/generateToken.js";
 import User from "../models/userModel.js";
 import bcrypt from "bcrypt";
+import nodemailer from "nodemailer";
 
 export const createUser = async (req, res) => {
   try {
@@ -106,6 +108,36 @@ export const deleteOneUser = async (req, res) => {
     const deletedUser = await user.save();
 
     res.status(200).json("user successfully deleted", { data: deletedUser });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const sendOTP = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json("Can't find user.");
+
+    //Remove objectId wrapper from user._id
+    const userId = user._id.toString().replace(/^newObjectId\("(.+)"\)$/, "$1");
+
+    //generate OTP
+    const otp = await generateOTP(userId);
+
+    // create reusable transporter object using the default SMTP transport\
+    const transporter = nodemailer.createTransport({
+      service: "Gmail",
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: "your_email@gmail.com",
+        pass: "your_app_password",
+      },
+    });
+
+    res.status(200).json({ message: "OTP sent successfully", OTP: otp });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
