@@ -233,3 +233,23 @@ export const sendOTP = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+//Login with OTP
+
+export const loginWithOTP = async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+
+    if (!email || !otp) return res.status(400).json("Email and OTP required");
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json("User not found!");
+
+    const token = await generateToken(user._id);
+
+    res
+      .status(200)
+      .json({ message: "User logged in successfully with OTP", token: token });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

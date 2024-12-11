@@ -5,6 +5,7 @@ import {
   getAllUsers,
   getSingleUser,
   loginUser,
+  loginWithOTP,
   sendOTP,
   updateUserById,
 } from "../controllers/userController.js";
@@ -30,4 +31,6 @@ router.patch("/update/:id", validateJWT, updateUserById);
 router.delete("/delete/:id", validateJWT, deleteOneUser); //Delete userby id
 
 router.post("/send-otp", sendOTP); //Send otp to the user
+
+router.post("/otp-login/:id", loginWithOTP);
 export default router;
