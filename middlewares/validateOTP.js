@@ -1,4 +1,5 @@
-import User from "../models/userModel";
+import User from "../models/userModel.js";
+import * as OTPAuth from "otpauth";
 
 const validateOTP = async (req, res, next) => {
   try {
@@ -30,7 +31,9 @@ const validateOTP = async (req, res, next) => {
     });
 
     //If the OTP is invalid, return an error message
-    if (!isValid) return res.status(400).json("Invalid OTP");
+    if (isValid === null) return res.status(400).json("Invalid OTP.");
+    //The one below didn't work.
+    // if (!isValid) return res.status(400).json("Invalid OTP");
 
     next(); //If the otp is valid, call the next middleware.
   } catch (error) {

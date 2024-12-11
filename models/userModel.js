@@ -34,14 +34,6 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-const productSchema = new mongoose.Schema({
-  name: {
-    required: true,
-    type: String,
-    trim: true,
-  },
-});
-
 const User = mongoose.model("User", userSchema);
 
 export default User;
