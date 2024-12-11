@@ -238,9 +238,8 @@ export const sendOTP = async (req, res) => {
 
 export const loginWithOTP = async (req, res) => {
   try {
-    const { email, otp } = req.body;
+    const { email } = req.body;
 
-    if (!email || !otp) return res.status(400).json("Email and OTP required");
     const user = await User.findOne({ email });
     if (!user) return res.status(404).json("User not found!");
 
