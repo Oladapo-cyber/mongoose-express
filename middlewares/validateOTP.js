@@ -9,7 +9,7 @@ const validateOTP = async (req, res, next) => {
 
     if (!user) return res.status(404).json("User not found.");
 
-    //Remove objectIdW wrapper fron user._id\
+    //Remove objectId wrapper fron user._id\
     const userId = user._id
       .toString()
       .replace(/^new ObjectId\("(.+)"\)$/, "$1");
